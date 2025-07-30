@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: lexikon-loop-server
+    runtime: node
+    buildCommand: npm install
+    startCommand: npm start
+    rootDir: .
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3001
