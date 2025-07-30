@@ -34,6 +34,11 @@ io.on('connection', (socket) => {
   console.log('🔌 New connection:', socket.id);
   console.log('🌐 Origin:', socket.handshake.headers.origin);
 
+  // Log all events for debugging
+  socket.onAny((eventName, ...args) => {
+    console.log(`📡 Event '${eventName}' from ${socket.id}:`, args);
+  });
+
   // Join a game room
   socket.on('joinRoom', (data) => {
     const {roomId, playerName, isHost} = data;
@@ -119,6 +124,11 @@ io.on('connection', (socket) => {
       };
 
       console.log('📡 Broadcasting dice roll to all players in room:', roomId);
+      console.log(
+        '📊 Room players:',
+        room.players.map((p) => p.name),
+      );
+      console.log('🎯 Game state being sent:', room.gameState);
       // Broadcast to all players in the room
       io.to(roomId).emit('diceRolled', room.gameState);
 
