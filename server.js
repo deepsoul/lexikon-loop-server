@@ -95,11 +95,15 @@ io.on('connection', (socket) => {
     const {roomId} = data;
     const room = gameRooms.get(roomId);
 
+    console.log('🎲 Dice roll requested for room:', roomId);
+
     if (room) {
       // Simulate dice roll result
       const categories = ['STADT', 'LAND', 'FLUSS', 'NAME', 'TIER', 'JACKPOT'];
       const result = Math.floor(Math.random() * categories.length);
       const category = categories[result];
+
+      console.log('🎯 Dice result:', category);
 
       room.gameState = {
         category: category,
@@ -114,14 +118,18 @@ io.on('connection', (socket) => {
         isJackpot: category === 'JACKPOT',
       };
 
+      console.log('📡 Broadcasting dice roll to all players in room:', roomId);
       // Broadcast to all players in the room
       io.to(roomId).emit('diceRolled', room.gameState);
 
       // Stop rolling after animation
       setTimeout(() => {
         room.gameState.rolling = false;
+        console.log('🛑 Stopping dice roll animation');
         io.to(roomId).emit('diceStopped', room.gameState);
       }, 1500);
+    } else {
+      console.log('❌ Room not found:', roomId);
     }
   });
 
