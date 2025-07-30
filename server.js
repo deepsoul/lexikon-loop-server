@@ -11,8 +11,12 @@ const io = socketIo(server, {
       'https://lexikon-loop.vercel.app',
       'https://lexikon-loop-git-main.vercel.app',
       'https://lexikon-loop-git-dev.vercel.app',
+      'https://lexikon-loop-git-feature-*.vercel.app',
+      'https://lexikon-loop-*.vercel.app',
       'http://localhost:5173',
       'http://localhost:3000',
+      'http://localhost:4173',
+      'http://localhost:8080',
     ],
     methods: ['GET', 'POST'],
     credentials: true,
@@ -27,17 +31,19 @@ const gameRooms = new Map();
 
 // Socket.IO connection handling
 io.on('connection', (socket) => {
-  console.log('User connected:', socket.id);
+  console.log('🔌 New connection:', socket.id);
+  console.log('🌐 Origin:', socket.handshake.headers.origin);
 
   // Join a game room
   socket.on('joinRoom', (data) => {
     const {roomId, playerName, isHost} = data;
 
     console.log(
-      `Player ${playerName} joining room ${roomId} as ${
+      `👥 Player ${playerName} joining room ${roomId} as ${
         isHost ? 'host' : 'client'
       }`,
     );
+    console.log('📊 Room data:', data);
 
     socket.join(roomId);
 
