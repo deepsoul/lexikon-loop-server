@@ -143,6 +143,39 @@ io.on('connection', (socket) => {
     }
   });
 
+  // Handle adding new player
+  socket.on('addPlayer', (data) => {
+    const {roomId, playerName, playerId} = data;
+    const room = gameRooms.get(roomId);
+
+    console.log('👥 Adding player to room:', roomId, playerName);
+
+    if (room) {
+      const newPlayer = {
+        id: playerId,
+        name: playerName,
+        score: 0,
+        isHost: false,
+      };
+
+      room.players.push(newPlayer);
+
+      console.log('✅ Player added:', newPlayer);
+      console.log(
+        '📊 All players in room:',
+        room.players.map((p) => p.name),
+      );
+
+      io.to(roomId).emit('playerAdded', {
+        playerId: playerId,
+        playerName: playerName,
+        allPlayers: room.players,
+      });
+    } else {
+      console.log('❌ Room not found for adding player:', roomId);
+    }
+  });
+
   // Handle player score update
   socket.on('updateScore', (data) => {
     const {roomId, playerId, points} = data;
@@ -152,8 +185,15 @@ io.on('connection', (socket) => {
       const player = room.players.find((p) => p.id === playerId);
       if (player) {
         player.score += points;
+        console.log(
+          '📊 Score updated for player:',
+          player.name,
+          'New score:',
+          player.score,
+        );
         io.to(roomId).emit('scoreUpdated', {
           playerId: playerId,
+          playerName: player.name,
           newScore: player.score,
           allPlayers: room.players,
         });
