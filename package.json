@@ -18,7 +18,12 @@
   "engines": {
     "node": "18.x"
   },
-  "keywords": ["websocket", "multiplayer", "game", "socket.io"],
+  "keywords": [
+    "websocket",
+    "multiplayer",
+    "game",
+    "socket.io"
+  ],
   "author": "Lexikon-Loop Team",
   "license": "MIT"
 }
