@@ -206,7 +206,11 @@ io.on('connection', (socket) => {
     const {roomId, direction} = data;
     const room = gameRooms.get(roomId);
 
+    console.log('🔄 Player switch requested:', direction, 'for room:', roomId);
+
     if (room && room.players.length > 0) {
+      const oldPlayer = room.gameState.currentPlayer;
+
       if (direction === 'next') {
         room.gameState.currentPlayer =
           (room.gameState.currentPlayer + 1) % room.players.length;
@@ -217,10 +221,26 @@ io.on('connection', (socket) => {
             : room.gameState.currentPlayer - 1;
       }
 
+      const newPlayer = room.gameState.currentPlayer;
+      const playerName = room.players[newPlayer]?.name || 'Unknown';
+
+      console.log(
+        '🔄 Player turn changed from',
+        oldPlayer,
+        'to',
+        newPlayer,
+        '(',
+        playerName,
+        ')',
+      );
+      console.log('📊 Broadcasting to all players in room:', roomId);
+
       io.to(roomId).emit('playerTurnChanged', {
         currentPlayer: room.gameState.currentPlayer,
         gameState: room.gameState,
       });
+    } else {
+      console.log('❌ Room not found or no players for switch:', roomId);
     }
   });
 
