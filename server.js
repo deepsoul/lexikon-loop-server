@@ -122,6 +122,9 @@ io.on('connection', (socket) => {
 
       console.log('🎯 Dice result:', category);
 
+      // Generate a consistent seed for all clients
+      const animationSeed = Math.random();
+
       room.gameState = {
         category: category,
         currentLetter:
@@ -133,6 +136,7 @@ io.on('connection', (socket) => {
         resultText: category === 'JACKPOT' ? '🎰 JACKPOT 🎰' : category,
         subResult: getCategoryDescription(category),
         isJackpot: category === 'JACKPOT',
+        animationSeed: animationSeed, // Add seed for synchronized animation
       };
 
       console.log('📡 Broadcasting dice roll to all players in room:', roomId);
