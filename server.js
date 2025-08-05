@@ -109,10 +109,22 @@ io.on('connection', (socket) => {
 
   // Handle dice roll
   socket.on('rollDice', (data) => {
+    console.log('🎲 === DICE ROLL EVENT RECEIVED ===');
+    console.log('📊 Event data:', data);
+    console.log('🔌 Socket ID:', socket.id);
+    console.log('🏠 Socket rooms:', Array.from(socket.rooms));
+
     const {roomId} = data;
     const room = gameRooms.get(roomId);
 
     console.log('🎲 Dice roll requested for room:', roomId);
+    console.log('🏠 Room exists:', !!room);
+    if (room) {
+      console.log(
+        '📊 Room players:',
+        room.players.map((p) => p.name),
+      );
+    }
 
     if (room) {
       // Simulate dice roll result
