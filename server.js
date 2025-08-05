@@ -71,15 +71,27 @@ io.on('connection', (socket) => {
 
     const room = gameRooms.get(roomId);
 
-    // Add player to room
-    const player = {
-      id: socket.id,
-      name: playerName,
-      score: 0,
-      isHost: isHost,
-    };
+    // Check if player already exists in room
+    const existingPlayer = room.players.find((p) => p.name === playerName);
+    let player;
 
-    room.players.push(player);
+    if (existingPlayer) {
+      console.log(
+        `👤 Player ${playerName} already exists in room ${roomId}, updating socket ID`,
+      );
+      existingPlayer.id = socket.id;
+      player = existingPlayer;
+    } else {
+      // Add new player to room
+      player = {
+        id: socket.id,
+        name: playerName,
+        score: 0,
+        isHost: isHost,
+      };
+      room.players.push(player);
+      console.log(`👤 Added new player ${playerName} to room ${roomId}`);
+    }
 
     if (isHost) {
       room.host = socket.id;
